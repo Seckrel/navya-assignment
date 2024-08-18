@@ -1,5 +1,6 @@
 from django.db import models, IntegrityError
 from django.db.utils import OperationalError
+from django.core.validators import MinValueValidator
 import uuid
 import time
 import hashlib
@@ -11,6 +12,7 @@ class Transaction(models.Model):
     name = models.CharField(max_length=255, null=False, blank=False,)
     phone = models.CharField(max_length=10, null=False, blank=False)
     email = models.EmailField(null=True, blank=True)
+    amount = models.FloatField(null=False, blank=False, validators=[MinValueValidator(0)])
     transaction_created_on = models.DateField(
         auto_now_add=True, editable=False)
     transaction_updated_on = models.DateField(auto_now=True, editable=False)
