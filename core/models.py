@@ -11,7 +11,9 @@ class Transaction(models.Model):
     name = models.CharField(max_length=255, null=False, blank=False,)
     phone = models.CharField(max_length=10, null=False, blank=False)
     email = models.EmailField(null=True, blank=True)
-    transaction_date = models.DateField(auto_now_add=True, editable=False)
+    transaction_created_on = models.DateField(
+        auto_now_add=True, editable=False)
+    transaction_updated_on = models.DateField(auto_now=True, editable=False)
     transaction_status = models.BooleanField(default=False)
 
     def __generate_rnd_tnx_id(self) -> str:
@@ -41,7 +43,7 @@ class Transaction(models.Model):
 
             for attempt in range(max_attempts):
                 try:
-                    self.transaction_id = self.generate_rnd_tnx_id()
+                    self.transaction_id = self.__generate_rnd_tnx_id()
                     super().save(*args, **kwargs)
 
                     break  # if successful

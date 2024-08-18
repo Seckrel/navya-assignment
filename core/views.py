@@ -1,3 +1,12 @@
-from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
-# Create your views here.
+
+class ListTransactionPdf(APIView):
+    """
+    Generate PDF for Transaction Model
+
+    Args:
+        APIView (file): PDF with transaction detail
+    """
+    pass
