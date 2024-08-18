@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     # custom apps
     'core',
     'auths',
-    'db_customizations'
 ]
 
 MIDDLEWARE = [
