@@ -1,0 +1,61 @@
+{% extends "core/base_pdf.html" %} {% block head %}
+<style>
+  * {
+    font-size: 12px;
+  }
+
+  table {
+    table-layout: fixed;
+    width: 100%;
+    border: 1px solid black;
+  }
+
+  table th {
+    text-align: center;
+    padding: 3px;
+    padding-bottom: 0;
+  }
+
+  table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 3px;
+    padding-bottom: 0;
+  }
+</style>
+{% endblock %} {% block content %}
+
+<table>
+  <tr>
+    <td>Transaction ID</th>
+    <td style="width: 10%">{{transaction.transaction_id}}</td>
+    
+  </tr>
+  <tr>
+    <td>Name</td>
+    <td sttyle="width: 40%; text-align: left;">{{transaction.name|title}}</td>
+    
+  </tr>
+  <tr>
+    <td>Phone</td>
+    <td style="width: 30%">{{transaction.phone}}</td>
+  </tr>
+
+  <tr>
+    <td>Email</td>
+    <td style="width: 20%">{{transaction.email}}</td>
+  </tr>
+
+  <tr>
+    <td>Amount</td>
+    <td style="width: 20%">{{transaction.amount}}</td>
+  </tr>
+
+  <tr>
+    <td>Transaction Date</td>
+    <td style="width: 20%">{{transaction.transaction_created_on}}</td>
+  </tr>
+
+</table>
+{% endblock %}

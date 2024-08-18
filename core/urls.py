@@ -8,7 +8,8 @@ router = DefaultRouter()
 router.register('transactions', TransactionModelViewSet)
 
 urlpatterns = [
-    path("pdf/transactions/", ListTransactionPdf.as_view())
+    path("pdf/transactions/", ListTransactionPdf.as_view()),
+    path("pdf/transactions/<str:transaction_id>/", ListTransactionPdf.as_view())
 ]
 
 urlpatterns += router.urls
