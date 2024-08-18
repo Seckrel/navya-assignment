@@ -1,4 +1,7 @@
 from django.contrib import admin
 from core.models import Transaction
 
-admin.site.register(Transaction)
+
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ['transaction_id', 'name', 'transaction_status']
