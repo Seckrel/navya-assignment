@@ -12,6 +12,11 @@ class TransactionStatus(models.TextChoices):
     Approved = "approved"
 
 
+class TransactionApprovedManager(models.Manager):
+    def get_queryset(self) -> models.QuerySet:
+        return super().get_queryset().filter(transaction_status=TransactionStatus.Approved)
+
+
 class Transaction(models.Model):
     transaction_id = models.TextField(
         null=False, blank=False, unique=True, editable=False)
@@ -24,6 +29,12 @@ class Transaction(models.Model):
         null=False, blank=False, editable=False)
     transaction_status = models.CharField(
         max_length=15, choices=TransactionStatus.choices, default=TransactionStatus.Pending)
+    
+    approved = TransactionApprovedManager()
+    objects = models.Manager()
+
+    def __str__(self) -> str:
+        return f"{self.transaction_id}-{self.email}"
 
     def __generate_rnd_tnx_id(self) -> str:
         """
