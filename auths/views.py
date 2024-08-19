@@ -19,6 +19,15 @@ from rest_framework.permissions import AllowAny
 
 class CustomTokenObtainPariView(TokenObtainPairView):
     def post(self, request: Request, *args, **kwargs) -> Response:
+        """
+        To login use by using Email and Password
+
+        Args:
+            request (Request): Takes Email and Password as request body
+
+        Returns:
+            Response: sets access and refresh jwt cookies
+        """
         response = super().post(request, *args, **kwargs)
 
         if response.status_code == 200:
@@ -41,6 +50,15 @@ class CustomTokenObtainPariView(TokenObtainPairView):
 
 class CustomRefreshView(TokenRefreshView):
     def post(self, request: Request, *args, **kwargs) -> Response:
+        """
+        Refreshes access cookie by using refresh cookie
+
+        Args:
+            request (Request): used to extract refresh cookie
+
+        Returns:
+            Response: set access cookie on success
+        """
         refresh_token = request.COOKIES.get(
             settings.AUTH_COOKIE['refresh']['name'])
 
@@ -82,6 +100,12 @@ class LogoutView(APIView):
 
 
 class SignUp(CreateModelMixin, GenericAPIView):
+    """
+    View to Signup Manager users only
+
+    Args:
+        serializer (Serializer): Takes email, password, and re_password as request body    
+    """
     serializer_class = UserSerializer
     queryset = get_user_model().objects.all()
     permission_classes = [AllowAny]
@@ -98,6 +122,9 @@ class SignUp(CreateModelMixin, GenericAPIView):
 
 
 class SignUpStaffUser(CreateModelMixin, GenericAPIView):
+    """
+    Used to Signup Staff user by manager
+    """
     serializer_class = UserSerializer
     queryset = get_user_model().objects.all()
     permission_classes = [IsManagerPermission]

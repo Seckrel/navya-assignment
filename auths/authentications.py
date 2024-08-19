@@ -4,6 +4,15 @@ from django.conf import settings
 
 class CookieBasedJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
+        """
+        Takes access token from either header or cookie to authenticate users
+
+        Args:
+            request (Request): object of request class
+
+        Returns:
+            Option[User|None]: on success returns instance of logged in user
+        """
         try:
             header = self.get_header(request)
             if header is None:
@@ -19,6 +28,4 @@ class CookieBasedJWTAuthentication(JWTAuthentication):
 
             return self.get_user(validated_token), validated_token
         except Exception as e:
-            import traceback
-            traceback.print_exc()
             return None

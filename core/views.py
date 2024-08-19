@@ -21,9 +21,16 @@ class ListTransactionPdf(ListModelMixin, RetrieveModelMixin, GenericAPIView):
     lookup_field = 'transaction_id'
     permission_classes = [IsStaffPermission | IsManagerPermission]
 
-    # TODO fix pdf formatting
-
     def get(self, request, *args, **kwargs):
+        """
+        Generates PDF with list of approved transactions
+
+        Args:
+            request (Request): object of Request class
+
+        Returns:
+            Response: PDF file on success
+        """
         if 'transaction_id' in kwargs:
             return self.retrieve(request, *args, **kwargs)
 
@@ -43,6 +50,15 @@ class ListTransactionPdf(ListModelMixin, RetrieveModelMixin, GenericAPIView):
         return response
 
     def retrieve(self, request, *args, **kwargs):
+        """
+        Generates PDF file for a single approved transaction
+
+        Args:
+            request (Request): object of Request class takes transaction_id as params
+
+        Returns:
+            Response: A PDF file with approved transaction detail on success
+        """
         try:
             template = get_template('core/pdf/transaction_detail.html')
             transaction = self.get_object()
@@ -64,6 +80,16 @@ class ListTransactionPdf(ListModelMixin, RetrieveModelMixin, GenericAPIView):
 
 
 class ApproveNewTransaction(UpdateModelMixin, GenericAPIView):
+    """
+    Allows only Manager level users to change transaction status to either approved | pending | rejected
+    Takes transaction_id as params
+
+    Raises:
+        ValidationError: Raises Validation exception if this API where to be used to update other fields of Transaction Model   
+
+    Returns:
+        Response: JSON containing entire transaction detail
+    """
     queryset = Transaction.objects.all()
     lookup_field = 'transaction_id'
     serializer_class = TransactionSerializer
@@ -87,4 +113,3 @@ class ApproveNewTransaction(UpdateModelMixin, GenericAPIView):
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
-
