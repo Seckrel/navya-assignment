@@ -10,12 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-'''
-loading .env file
-'''
-from pathlib import Path
-import os
 from dotenv import load_dotenv
+import os
+from pathlib import Path
 load_dotenv()
 
 
@@ -162,11 +159,7 @@ AUTH_COOKIE = {
     "path": "/",
     "same_site": 'None'
 }
-# AUTH_COOKIE = 'access'
-AUTH_REFRESH_COOKIE = 'refresh'
-AUTH_COOKIE_MAX_AGE = 60 * 5
-AUTH_REFRESH_COOKIE_MAX_AGE = 60 * 60 * 24
-AUTH_COOKIE_SECURE = os.getenv("AUTH_COOKIE_SECURE", "True") == 'True'
-AUTH_COOKIE_HTTP_ONLY = True
-AUTH_COOKIE_PATH = '/'
-AUTH_COOKIE_SAME_SITE = 'None'
+
+
+# custom user
+AUTH_USER_MODEL = "auths.AccountUser"
