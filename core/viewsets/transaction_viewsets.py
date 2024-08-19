@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from core.models import Transaction
 from core.serializers.transaction_serializer import TransactionSerializer
+from core.permissions import StaffAllowedPermission
 
 
 class TransactionModelViewSet(ModelViewSet):
@@ -10,8 +11,7 @@ class TransactionModelViewSet(ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
     lookup_field = 'transaction_id'
-
-    # TODO permission class
+    permission_classes = [StaffAllowedPermission]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
