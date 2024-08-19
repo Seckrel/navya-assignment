@@ -39,24 +39,29 @@ class Transaction(models.Model):
     def __generate_rnd_tnx_id(self) -> str:
         """
         Combines uuid4 with UNIX EPOC to generate sha256 digest
-        8 bytes of the hash will be used to generate transaction id
+        5 bytes of the hash will be used to generate transaction id
+        the method can handle 2^40 unique ids. 
+        Chance of 50% collision after ~ 1,233,212 unique ids generation
+        Increase default 5 bytes to reduce change of collison
 
         Returns:
             str: transaction id in the format of integer prefiexed by TNX
         """
+        EXTRACTED_BYTES = 4
+        FIXED_LENGTH = 12
         uuid4 = uuid.uuid4()
         epoch_time = int(time.time())
         combined_string = f"{uuid4}{epoch_time}"
 
         # Hash the combined string using SHA256
         hashed = hashlib.sha256(combined_string.encode()).digest()
-        hashed_int = int.from_bytes(hashed[:8], byteorder='big')
-        return f"TXN{hashed_int}"
+        hashed_int = int.from_bytes(hashed[:EXTRACTED_BYTES], byteorder='big')
+        formatted_int = f"{hashed_int:0{FIXED_LENGTH}d}"
+        return f"TXNID{formatted_int}"
 
     def save(self, *args, **kwargs):
         '''
-        custom __generate_rnd_tnx_id method can handle 2^64 (i.e. 64 bit integer) unique ids.
-        To furthure any collision, max_attemps of 10 is used.
+        To furthur any collision, max_attemps of 10 is used.
         '''
 
         self.email = self.email.lower()
