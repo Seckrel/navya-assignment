@@ -6,12 +6,14 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView
 )
 from rest_framework.generics import GenericAPIView
+from rest_framework.views import APIView
 from rest_framework.mixins import CreateModelMixin
 from auths.utils.cookie import set_cookie
 from django.conf import settings
 from .serializers import UserSerializer
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from auths.permissions import IsManagerPermission
 
 
 class CustomTokenObtainPariView(TokenObtainPairView):
@@ -70,6 +72,14 @@ class CustomTokenVerifyView(TokenVerifyView):
         return super().post(request, *args, **kwargs)
 
 
+class LogoutView(APIView):
+    def post(self, request, *args, **kwargs):
+        response = Response(status=204)
+        response.delete_cookie(settings.AUTH_COOKIE['access']['name'])
+        response.delete_cookie(settings.AUTH_COOKIE['refresh']['name'])
+        return response
+
+
 class SignUp(CreateModelMixin, GenericAPIView):
     serializer_class = UserSerializer
     queryset = get_user_model().objects.all()
@@ -79,6 +89,21 @@ class SignUp(CreateModelMixin, GenericAPIView):
         instance = serializer.instance
         manager_grp = Group.objects.get(name="Manager")
         instance.groups.add(manager_grp)
+        instance.save()
+
+    def post(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+
+class SignUpStaffUser(CreateModelMixin, GenericAPIView):
+    serializer_class = UserSerializer
+    queryset = get_user_model().objects.all()
+    permission_classes = [IsManagerPermission]
+
+    def perform_create(self, serializer):
+        super().perform_create(serializer)
+        instance = serializer.instance
+        instance.is_admin = True
         instance.save()
 
     def post(self, request, *args, **kwargs):
