@@ -11,11 +11,11 @@ class Transaction(models.Model):
         null=False, blank=False, unique=True, editable=False)
     name = models.CharField(max_length=255, null=False, blank=False,)
     phone = models.CharField(max_length=10, null=False, blank=False)
-    email = models.EmailField(null=True, blank=True)
-    amount = models.FloatField(null=False, blank=False, validators=[MinValueValidator(0)])
-    transaction_created_on = models.DateField(
-        auto_now_add=True, editable=False)
-    transaction_updated_on = models.DateField(auto_now=True, editable=False)
+    email = models.EmailField(null=False, blank=False)
+    amount = models.FloatField(null=False, blank=False, validators=[
+                               MinValueValidator(0)])
+    transaction_date = models.DateField(
+        null=False, blank=False, editable=False)
     transaction_status = models.BooleanField(default=False)
 
     def __generate_rnd_tnx_id(self) -> str:

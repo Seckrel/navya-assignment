@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from core.models import Transaction
 from core.serializers.transaction_serializer import TransactionSerializer
 from core.permissions import StaffAllowedPermission
+from django.db import IntegrityError
 
 
 class TransactionModelViewSet(ModelViewSet):
@@ -20,12 +21,16 @@ class TransactionModelViewSet(ModelViewSet):
         if self.__check_staff_privilage(request):
             return Response("You Donot have permission to update transaction status")
 
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
 
-        instance = serializer.instance
+            instance = serializer.instance
+        except IntegrityError as e:
+            return Response(str(e), status=400)
+
         return Response(instance.transaction_id, status=status.HTTP_201_CREATED, headers=headers)
 
     def partial_update(self, request, *args, **kwargs):
