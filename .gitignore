@@ -368,4 +368,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# docker
+pgpass.txt
+postgres/
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,linux,django,python,visualstudiocode,venv
