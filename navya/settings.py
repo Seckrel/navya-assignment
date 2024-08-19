@@ -45,11 +45,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
 
     # custom apps
     'core',
     'auths',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'auths.authentications.CookieBasedJWTAuthentication',
+    ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -137,3 +146,27 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# custom auth cookie settings
+AUTH_COOKIE = {
+    "access": {
+        "name": "access",
+        "max_age": 60 * 5  # 5 min default
+    },
+    "refresh": {
+        "name": "refresh",
+        "max_age": 60 * 60 * 24
+    },
+    "secure": os.getenv("AUTH_COOKIE_SECURE", "True") == 'True',
+    "http_only": True,
+    "path": "/",
+    "same_site": 'None'
+}
+# AUTH_COOKIE = 'access'
+AUTH_REFRESH_COOKIE = 'refresh'
+AUTH_COOKIE_MAX_AGE = 60 * 5
+AUTH_REFRESH_COOKIE_MAX_AGE = 60 * 60 * 24
+AUTH_COOKIE_SECURE = os.getenv("AUTH_COOKIE_SECURE", "True") == 'True'
+AUTH_COOKIE_HTTP_ONLY = True
+AUTH_COOKIE_PATH = '/'
+AUTH_COOKIE_SAME_SITE = 'None'
