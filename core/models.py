@@ -6,6 +6,12 @@ import time
 import hashlib
 
 
+class TransactionStatus(models.TextChoices):
+    Pending = "pending"
+    Rejected = "rejected"
+    Approved = "approved"
+
+
 class Transaction(models.Model):
     transaction_id = models.TextField(
         null=False, blank=False, unique=True, editable=False)
@@ -16,7 +22,8 @@ class Transaction(models.Model):
                                MinValueValidator(0)])
     transaction_date = models.DateField(
         null=False, blank=False, editable=False)
-    transaction_status = models.BooleanField(default=False)
+    transaction_status = models.CharField(
+        max_length=15, choices=TransactionStatus.choices, default=TransactionStatus.Pending)
 
     def __generate_rnd_tnx_id(self) -> str:
         """

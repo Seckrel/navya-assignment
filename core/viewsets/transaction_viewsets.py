@@ -34,7 +34,6 @@ class TransactionModelViewSet(ModelViewSet):
         return Response(instance.transaction_id, status=status.HTTP_201_CREATED, headers=headers)
 
     def partial_update(self, request, *args, **kwargs):
-        print("running")
         if self.__check_staff_privilage(request):
             return Response("You Donot have permission to update transaction status")
         return super().partial_update(request, *args, **kwargs)

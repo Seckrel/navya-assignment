@@ -6,6 +6,8 @@ from xhtml2pdf.pisa import CreatePDF
 from django.http import HttpResponse
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from core.serializers.transaction_serializer import TransactionSerializer
+from rest_framework.exceptions import ValidationError
+from auths.permissions import IsManagerPermission
 
 
 class ListTransactionPdf(ListModelMixin, RetrieveModelMixin, GenericAPIView):
@@ -65,20 +67,23 @@ class ApproveNewTransaction(UpdateModelMixin, GenericAPIView):
     queryset = Transaction.objects.all()
     lookup_field = 'transaction_id'
     serializer_class = TransactionSerializer
-
-    # TODO permission class
+    permission_classes = [IsManagerPermission]
 
     def update(self, request, *args, **kwargs):
+        allowed_field = 'transaction_status'
+        if set(request.data.keys()) != {allowed_field}:
+            raise ValidationError(
+                f"Only the '{allowed_field}' field can be updated.")
+
         try:
             instance = self.get_object()
-            instance.transaction_status = True
-            instance.save()
-
-            serialzer = self.get_serializer(instance, partial=True)
-            return Response(serialzer.data, status=200)
+            serializer = self.get_serializer(
+                instance, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data, status=200)
         except Transaction.DoesNotExist:
             return Response("Transaction Id does not exists", status=404)
 
     def patch(self, request, *args, **kwargs):
-        # Note how we use `partial_update()` here
         return self.partial_update(request, *args, **kwargs)
