@@ -4,7 +4,8 @@ from django.template.loader import get_template
 from core.models import Transaction
 from xhtml2pdf.pisa import CreatePDF
 from django.http import HttpResponse
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from core.serializers.transaction_serializer import TransactionSerializer
 
 
 class ListTransactionPdf(ListModelMixin, RetrieveModelMixin, GenericAPIView):
@@ -18,6 +19,7 @@ class ListTransactionPdf(ListModelMixin, RetrieveModelMixin, GenericAPIView):
     lookup_field = 'transaction_id'
 
     # TODO fix pdf formatting
+    # TODO permission class
 
     def get(self, request, *args, **kwargs):
         if 'transaction_id' in kwargs:
@@ -57,3 +59,26 @@ class ListTransactionPdf(ListModelMixin, RetrieveModelMixin, GenericAPIView):
             return response
         except Transaction.DoesNotExist:
             return Response("Transaction Id Not Found", status=404)
+
+
+class ApproveNewTransaction(UpdateModelMixin, GenericAPIView):
+    queryset = Transaction.objects.all()
+    lookup_field = 'transaction_id'
+    serializer_class = TransactionSerializer
+
+    # TODO permission class
+
+    def update(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            instance.transaction_status = True
+            instance.save()
+
+            serialzer = self.get_serializer(instance, partial=True)
+            return Response(serialzer.data, status=200)
+        except Transaction.DoesNotExist:
+            return Response("Transaction Id does not exists", status=404)
+
+    def patch(self, request, *args, **kwargs):
+        # Note how we use `partial_update()` here
+        return self.partial_update(request, *args, **kwargs)
