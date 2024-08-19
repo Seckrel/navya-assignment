@@ -29,9 +29,9 @@ class Transaction(models.Model):
         null=False, blank=False, editable=False)
     transaction_status = models.CharField(
         max_length=15, choices=TransactionStatus.choices, default=TransactionStatus.Pending)
-    
-    approved = TransactionApprovedManager()
+
     objects = models.Manager()
+    approved = TransactionApprovedManager()
 
     def __str__(self) -> str:
         return f"{self.transaction_id}-{self.email}"
@@ -58,6 +58,8 @@ class Transaction(models.Model):
         custom __generate_rnd_tnx_id method can handle 2^64 (i.e. 64 bit integer) unique ids.
         To furthure any collision, max_attemps of 10 is used.
         '''
+
+        self.email = self.email.lower()
         if not self.transaction_id:
             max_attempts = 10
 

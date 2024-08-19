@@ -14,6 +14,7 @@ from .serializers import UserSerializer
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from auths.permissions import IsManagerPermission
+from rest_framework.permissions import AllowAny
 
 
 class CustomTokenObtainPariView(TokenObtainPairView):
@@ -83,6 +84,7 @@ class LogoutView(APIView):
 class SignUp(CreateModelMixin, GenericAPIView):
     serializer_class = UserSerializer
     queryset = get_user_model().objects.all()
+    permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
         super().perform_create(serializer)
