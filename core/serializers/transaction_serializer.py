@@ -10,4 +10,6 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        exclude = ('transaction_status', 'transaction_created_on',)
+        exclude = ('transaction_created_on', 'id', 'transaction_updated_on')
+        extra_kwargs = {'password': {'write_only': True},
+                        'transaction_status': {'write_only': True}}
