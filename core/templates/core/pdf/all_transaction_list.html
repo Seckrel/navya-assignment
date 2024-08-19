@@ -1,7 +1,7 @@
 {% extends "core/base_pdf.html" %} {% block head %}
 <style>
   * {
-    font-size: 12px;
+    font-size: 10px;
   }
   table {
     table-layout: fixed;
@@ -35,13 +35,13 @@
     <th>Transaction Date</th>
   </tr>
   {%for transaction in transactions%}
-  <tr>
-    <td style="width: 10%">{{forloop.transaction_id}}</td>
-    <td sttyle="width: 40%; text-align: left;">{{transaction.name|title}}</td>
-    <td style="width: 30%">{{transaction.phone}}</td>
-    <td style="width: 20%">{{transaction.email}}</td>
-    <td style="width: 20%">{{transaction.amount}}</td>
-    <td style="width: 20%">{{transaction.transaction_created_on}}</td>
+  <tr style="text-align: center">
+    <td style="width: 15%">{{transaction.transaction_id}}</td>
+    <td sttyle="width: 20%;">{{transaction.name|title}}</td>
+    <td style="width: 10%">{{transaction.phone}}</td>
+    <td style="width: 25%">{{transaction.email}}</td>
+    <td style="width: 10%">{{transaction.amount}}</td>
+    <td style="width: 20%">{{transaction.transaction_date}}</td>
   </tr>
   {%endfor%}
 </table>

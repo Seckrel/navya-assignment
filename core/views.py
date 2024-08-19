@@ -87,3 +87,4 @@ class ApproveNewTransaction(UpdateModelMixin, GenericAPIView):
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
