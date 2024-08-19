@@ -14,6 +14,8 @@ from dotenv import load_dotenv
 import os
 from pathlib import Path
 load_dotenv()
+import mimetypes
+mimetypes.add_type("image/svg+xml", ".svg", True)
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -166,3 +168,18 @@ AUTH_COOKIE = {
 
 # custom user
 AUTH_USER_MODEL = "auths.AccountUser"
+
+# static files management
+STATIC_URL = '/static/'
+
+# Directory where static files will be collected for deployment
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Additional directories to look for static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_URL = "/media/"
+

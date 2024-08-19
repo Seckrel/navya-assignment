@@ -8,6 +8,8 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateMode
 from core.serializers.transaction_serializer import TransactionSerializer
 from rest_framework.exceptions import ValidationError
 from auths.permissions import IsManagerPermission, IsStaffPermission
+from django.conf import settings
+import os
 
 
 class ListTransactionPdf(ListModelMixin, RetrieveModelMixin, GenericAPIView):
@@ -20,6 +22,30 @@ class ListTransactionPdf(ListModelMixin, RetrieveModelMixin, GenericAPIView):
     queryset = Transaction.approved.all()
     lookup_field = 'transaction_id'
     permission_classes = [IsStaffPermission | IsManagerPermission]
+
+    def link_callback(self, uri, rel):
+        """
+        Convert HTML URIs to absolute system paths so xhtml2pdf can access those
+        resources
+        """
+        sUrl = settings.STATIC_URL  
+        sRoot = settings.STATIC_ROOT
+        mUrl = settings.MEDIA_URL   
+        mRoot = settings.MEDIA_ROOT 
+
+        if uri.startswith(mUrl):
+            path = os.path.join(mRoot, uri.replace(mUrl, ""))
+        elif uri.startswith(sUrl):
+            path = os.path.join(sRoot, uri.replace(sUrl, ""))
+        else:
+            return uri
+
+        # make sure that file exists
+        if not os.path.isfile(path):
+            raise RuntimeError(
+                'media URI must start with %s or %s' % (sUrl, mUrl)
+            )
+        return path
 
     def get(self, request, *args, **kwargs):
         """
@@ -41,7 +67,8 @@ class ListTransactionPdf(ListModelMixin, RetrieveModelMixin, GenericAPIView):
         })
 
         response = HttpResponse(content_type='application/pdf')
-        pdf_status = CreatePDF(pdf_html, dest=response)
+        pdf_status = CreatePDF(pdf_html, dest=response,
+                               link_callback=self.link_callback)
 
         if pdf_status.err:
             return Response('Error in generating PDF. Try again', status=400)
@@ -68,7 +95,8 @@ class ListTransactionPdf(ListModelMixin, RetrieveModelMixin, GenericAPIView):
             })
 
             response = HttpResponse(content_type='application/pdf')
-            pdf_status = CreatePDF(pdf_html, dest=response)
+            pdf_status = CreatePDF(
+                pdf_html, dest=response, link_callback=self.link_callback)
 
             if pdf_status.err:
                 return Response('Error in generating PDF. Try again', status=400)
