@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from core.serializers.transaction_serializer import TransactionSerializer
 from rest_framework.exceptions import ValidationError
-from auths.permissions import IsManagerPermission
+from auths.permissions import IsManagerPermission, IsStaffPermission
 
 
 class ListTransactionPdf(ListModelMixin, RetrieveModelMixin, GenericAPIView):
@@ -17,11 +17,11 @@ class ListTransactionPdf(ListModelMixin, RetrieveModelMixin, GenericAPIView):
     Args:
         APIView (file): PDF with transaction detail
     """
-    queryset = Transaction.objects.all()
+    queryset = Transaction.approved.all()
     lookup_field = 'transaction_id'
+    permission_classes = [IsStaffPermission | IsManagerPermission]
 
     # TODO fix pdf formatting
-    # TODO permission class
 
     def get(self, request, *args, **kwargs):
         if 'transaction_id' in kwargs:
