@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import Group
 
 
 class AccountUserManager(BaseUserManager):
@@ -35,7 +36,7 @@ class AccountUserManager(BaseUserManager):
         return user
 
 
-class AccountUser(AbstractBaseUser):
+class AccountUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         verbose_name="email address",
         max_length=255,
@@ -70,3 +71,13 @@ class AccountUser(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+    @property
+    def is_manager(self):
+        try:
+            self.groups.get(name="Manager")
+            return True
+        except self.DoesNotExist:
+            return False
+        except Group.DoesNotExist:
+            return False
