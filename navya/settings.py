@@ -26,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-akmf)_^w3-5la$y$k$375u(vns488f@n4lt#*@8p*=og%6p%df'
+SECRET_KEY = os.getenv('DJANGO_SECRET', 'django-insecure-akmf)_^w3-5la$y$k$375u(vns488f@n4lt#*@8p*=og%6p%df')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -100,7 +100,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': os.getenv('DB_HOST', 'localhost'),
-        'NAME': os.getenv('POSTGRES_DB', ''),
+        'NAME': os.getenv('DB_NAME', ''),
         'USER': os.getenv('POSTGRES_USER', ''),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', ""),
         'PORT': os.getenv('DB_PORT', '5432')
