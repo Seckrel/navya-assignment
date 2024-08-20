@@ -9,6 +9,7 @@
   - [Requirements](#requirements)
   - [Initial Setup](#initial-setup)
 - [Developer Note](#developer-note)
+- [API Documentation](#api-documentation)
 
 # Introduction
 
@@ -67,6 +68,9 @@ python manage.py collectstatic is required for APIs
 This is due to working of xhtml2pdf library, used to generate pdf for these two APIs.
 ```
 Issues is explained in detail at [`https://github.com/xhtml2pdf/xhtml2pdf/issues/548`](https://github.com/xhtml2pdf/xhtml2pdf/issues/548)
+
+# API Documentation
+Postman [Documentation](https://documenter.getpostman.com/view/8411525/2sA3sAgSfr)
 
 
 
