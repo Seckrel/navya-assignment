@@ -28,10 +28,10 @@ class ListTransactionPdf(ListModelMixin, RetrieveModelMixin, GenericAPIView):
         Convert HTML URIs to absolute system paths so xhtml2pdf can access those
         resources
         """
-        sUrl = settings.STATIC_URL  
+        sUrl = settings.STATIC_URL
         sRoot = settings.STATIC_ROOT
-        mUrl = settings.MEDIA_URL   
-        mRoot = settings.MEDIA_ROOT 
+        mUrl = settings.MEDIA_URL
+        mRoot = settings.MEDIA_ROOT
 
         if uri.startswith(mUrl):
             path = os.path.join(mRoot, uri.replace(mUrl, ""))
